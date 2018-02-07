@@ -49,14 +49,14 @@ resource "google_compute_health_check" "jenkins-public-health-check" {
   name = "${var.env_id}-jenkins-public"
   http_health_check {
     port         = 8080
-    request_path = "/health"
+    request_path = "/login"
   }
 }
 
 resource "google_compute_http_health_check" "jenkins-public-health-check" {
   name         = "${var.env_id}-jenkins"
   port         = 8080
-  request_path = "/health"
+  request_path = "/login"
 }
 
 resource "google_compute_firewall" "jenkins-health-check" {
@@ -81,7 +81,7 @@ resource "google_compute_instance_group" "router-lb-0" {
 
   named_port {
     name = "http"
-    port = "80"
+    port = "8080"
   }
 }
 
@@ -92,7 +92,7 @@ resource "google_compute_instance_group" "router-lb-1" {
 
   named_port {
     name = "http"
-    port = "80"
+    port = "8080"
   }
 }
 
@@ -103,7 +103,7 @@ resource "google_compute_instance_group" "router-lb-2" {
 
   named_port {
     name = "http"
-    port = "80"
+    port = "8080"
   }
 }
 
