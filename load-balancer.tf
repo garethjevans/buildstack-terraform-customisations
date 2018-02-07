@@ -48,20 +48,19 @@ resource "google_compute_global_address" "jenkins-address" {
 //  default_service = "${google_compute_backend_service.router-lb-backend-service.self_link}"
 //}
 
-//resource "google_compute_health_check" "jenkins-public-health-check" {
-//  name = "${var.env_id}-jenkins-public"
+resource "google_compute_health_check" "jenkins-public-health-check" {
+  name = "${var.env_id}-jenkins-public"
+  http_health_check {
+    port         = 8080
+    request_path = "/health"
+  }
+}
 
-//  http_health_check {
-//    port         = 8080
-//    request_path = "/health"
-//  }
-//}
-
-//resource "google_compute_http_health_check" "jenkins-public-health-check" {
-//  name         = "${var.env_id}-jenkins"
-//  port         = 8080
-//  request_path = "/health"
-//}
+resource "google_compute_http_health_check" "jenkins-public-health-check" {
+  name         = "${var.env_id}-jenkins"
+  port         = 8080
+  request_path = "/health"
+}
 
 //resource "google_compute_firewall" "jenkins-health-check" {
 //  name       = "${var.env_id}-jenkins-health-check"
