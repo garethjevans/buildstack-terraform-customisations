@@ -49,3 +49,44 @@ resource "google_sql_database_instance" "db-failover" {
   }
 }
 
+resource "google_sql_database" "gerrit_db" {
+  name = "gerrit_db"
+  instance = "${google_sql_database_instance.db-instance.name}"
+  charset = "utf8"
+  collation = "utf8_general_ci"
+  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+}
+
+resource "random_string" "gerrit-password" {
+  length = 16
+  special = false
+}
+
+resource "google_sql_user" "gerrit" {
+  name = "gerrit"
+  instance = "${google_sql_database_instance.db-instance.name}"
+  host = "%"
+  password = "${random_string.gerrit-password.result}"
+  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+}
+
+resource "google_sql_database" "sonar_db" {
+  name = "sonar_db"
+  instance = "${google_sql_database_instance.db-instance.name}"
+  charset = "utf8"
+  collation = "utf8_general_ci"
+  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+}
+
+resource "random_string" "sonar-password" {
+  length = 16
+  special = false
+}
+
+resource "google_sql_user" "sonar" {
+  name = "sonar"
+  instance = "${google_sql_database_instance.db-instance.name}"
+  host = "%"
+  password = "${random_string.sonar-password.result}"
+  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+}
