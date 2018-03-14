@@ -11,8 +11,6 @@ resource "google_sql_database_instance" "db-instance" {
 
       authorized_networks = [
 		authorized_network_0 = "${module.terraform-gcp-natgateway.nat-gateway-ips["0"]}"
-		authorized_network_1 = "${module.terraform-gcp-natgateway.nat-gateway-ips["1"]}"
-		authorized_network_2 = "${module.terraform-gcp-natgateway.nat-gateway-ips["2"]}"
       ]
 
     }
@@ -44,7 +42,7 @@ resource "google_sql_database_instance" "db-failover" {
       ipv4_enabled = "true"
 
       authorized_networks = [
-        { value = "0.0.0.0/0" },
+		authorized_network_0 = "${module.terraform-gcp-natgateway.nat-gateway-ips["0"]}"
       ]
     }
 
