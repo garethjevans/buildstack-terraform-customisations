@@ -99,17 +99,11 @@ resource "google_compute_backend_service" "uaa-router-lb-backend-service" {
   health_checks = ["${google_compute_health_check.uaa-public-health-check.self_link}"]
 }
 
-resource "google_dns_managed_zone" "uaa_env_dns_zone" {
-  name        = "${var.env_id}-zone"
-  dns_name    = "${var.env_id}.build.finkit.io."
-  description = "DNS zone for the ${var.env_id} environment"
-}
-
 resource "google_dns_record_set" "uaa-dns" {
-  name       = "uaa.${google_dns_managed_zone.uaa_env_dns_zone.dns_name}"
-  depends_on = ["google_compute_global_address.uaa-address"]
-  type       = "A"
-  ttl        = 300
-  managed_zone = "${google_dns_managed_zone.uaa_env_dns_zone.name}"
+  name       = "uaa.${google_dns_managed_zone.env_dns_zone.dns_name}"
+  depends_on = ["google_compute_global_address.uaa-address", "google_dns_managed_zone.env_dns_zone"]
+  type       = "A" 
+  ttl        = 300 
+  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
   rrdatas = ["${google_compute_global_address.uaa-address.address}"]
 }
