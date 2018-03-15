@@ -1,3 +1,11 @@
+variable "certificate" {
+  type = "string"
+}
+
+variable "key" {
+  type = "string"
+}
+
 resource "google_compute_ssl_certificate" "buildstack-cert" {
   name = "buildstack"
   name_prefix = "${var.env_id}"
