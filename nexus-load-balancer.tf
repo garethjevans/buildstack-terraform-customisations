@@ -10,7 +10,7 @@ resource "google_compute_global_forwarding_rule" "nexus-https-forwarding-rule" {
 }
 
 resource "google_compute_target_https_proxy" "nexus-https-lb-proxy" {
-  name             = "${var.env_id}-https-proxy"
+  name             = "${var.env_id}-nexus-https-proxy"
   description      = "really a load balancer but listed as an https proxy"
   url_map          = "${google_compute_url_map.nexus-https-lb-url-map.self_link}"
   ssl_certificates = ["${google_compute_ssl_certificate.buildstack-cert.self_link}"]
