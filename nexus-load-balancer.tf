@@ -100,7 +100,7 @@ resource "google_compute_backend_service" "nexus-router-lb-backend-service" {
 }
 
 resource "google_dns_record_set" "nexus-dns" {
-  name       = "jenkins.${google_dns_managed_zone.env_dns_zone.dns_name}"
+  name       = "nexus.${google_dns_managed_zone.env_dns_zone.dns_name}"
   depends_on = ["google_compute_global_address.nexus-address", "google_dns_managed_zone.env_dns_zone"]
   type       = "A" 
   ttl        = 300 
