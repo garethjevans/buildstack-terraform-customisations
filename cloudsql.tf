@@ -57,17 +57,17 @@ resource "google_sql_database" "gerrit_db" {
   depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
 }
 
-resource "random_string" "gerrit_mysql_password" {
-  length = 16
-  special = false
-}
-
 resource "google_sql_user" "gerrit" {
   name = "gerrit"
   instance = "${google_sql_database_instance.db_instance.name}"
   host = "%"
   password = "${random_string.gerrit_mysql_password.result}"
   depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
+}
+
+resource "random_string" "gerrit_mysql_password" {
+  length = 16
+  special = false
 }
 
 resource "google_sql_database" "sonar_db" {
@@ -78,17 +78,38 @@ resource "google_sql_database" "sonar_db" {
   depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
 }
 
-resource "random_string" "sonar_mysql_password" {
-  length = 16
-  special = false
-}
-
 resource "google_sql_user" "sonar" {
   name = "sonar"
   instance = "${google_sql_database_instance.db_instance.name}"
   host = "%"
   password = "${random_string.sonar_mysql_password.result}"
   depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
+}
+
+resource "random_string" "sonar_mysql_password" {
+  length = 16
+  special = false
+}
+
+resource "google_sql_database" "uaa_db" {
+  name = "uaa_db"
+  instance = "${google_sql_database_instance.db_instance.name}"
+  charset = "utf8"
+  collation = "utf8_general_ci"
+  depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
+}
+
+resource "google_sql_user" "uaa" {
+  name = "uaa"
+  instance = "${google_sql_database_instance.db_instance.name}"
+  host = "%"
+  password = "${random_string.uaa_mysql_password.result}"
+  depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
+}
+
+resource "random_string" "uaa_mysql_password" {
+  length = 16
+  special = false
 }
 
 output "buildstack_db_instance_name" {
@@ -107,3 +128,6 @@ output "sonar_mysql_password" {
   value = "${random_string.sonar_mysql_password.result}"
 }
 
+output "uaa_mysql_password" {
+  value = "${random_string.uaa_mysql_password.result}"
+}
