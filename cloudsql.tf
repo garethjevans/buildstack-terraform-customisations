@@ -1,4 +1,4 @@
-resource "google_sql_database_instance" "db-instance" {
+resource "google_sql_database_instance" "db_instance" {
   region = "${var.region}"
   project = "${var.project_id}"
 
@@ -24,12 +24,12 @@ resource "google_sql_database_instance" "db-instance" {
   }
 }
 
-resource "google_sql_database_instance" "db-failover" {
+resource "google_sql_database_instance" "db_failover" {
   region = "${var.region}"
   project = "${var.project_id}"
-  depends_on = ["google_sql_database_instance.db-instance"]
+  depends_on = ["google_sql_database_instance.db_instance"]
 
-  master_instance_name = "${google_sql_database_instance.db-instance.name}"
+  master_instance_name = "${google_sql_database_instance.db_instance.name}"
   replica_configuration {
     failover_target = "true"
   }
@@ -51,42 +51,59 @@ resource "google_sql_database_instance" "db-failover" {
 
 resource "google_sql_database" "gerrit_db" {
   name = "gerrit_db"
-  instance = "${google_sql_database_instance.db-instance.name}"
+  instance = "${google_sql_database_instance.db_instance.name}"
   charset = "utf8"
   collation = "utf8_general_ci"
-  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+  depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
 }
 
-resource "random_string" "gerrit-password" {
+resource "random_string" "gerrit_mysql_password" {
   length = 16
   special = false
 }
 
 resource "google_sql_user" "gerrit" {
   name = "gerrit"
-  instance = "${google_sql_database_instance.db-instance.name}"
+  instance = "${google_sql_database_instance.db_instance.name}"
   host = "%"
-  password = "${random_string.gerrit-password.result}"
-  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+  password = "${random_string.gerrit_mysql_password.result}"
+  depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
 }
 
 resource "google_sql_database" "sonar_db" {
   name = "sonar_db"
-  instance = "${google_sql_database_instance.db-instance.name}"
+  instance = "${google_sql_database_instance.db_instance.name}"
   charset = "utf8"
   collation = "utf8_general_ci"
-  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+  depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
 }
 
-resource "random_string" "sonar-password" {
+resource "random_string" "sonar_mysql_password" {
   length = 16
   special = false
 }
 
 resource "google_sql_user" "sonar" {
   name = "sonar"
-  instance = "${google_sql_database_instance.db-instance.name}"
+  instance = "${google_sql_database_instance.db_instance.name}"
   host = "%"
-  password = "${random_string.sonar-password.result}"
-  depends_on = ["google_sql_database_instance.db-instance", "google_sql_database_instance.db-failover"]
+  password = "${random_string.sonar_mysql_password.result}"
+  depends_on = ["google_sql_database_instance.db_instance", "google_sql_database_instance.db_failover"]
 }
+
+output "buildstack_db_instance_name" {
+  value = "${google_sql_database_instance.db_instance.name}"
+}
+
+output "buildstack_db_instance_ip" {
+  value = "${google_sql_database_instance.db_instance.ip_address.0.ip_address}"
+}
+
+output "gerrit_mysql_password" {
+  value = "${random_string.gerrit_mysql_password.result}"
+}
+
+output "sonar_mysql_password" {
+  value = "${random_string.sonar_mysql_password.result}"
+}
+
