@@ -104,6 +104,6 @@ resource "google_dns_record_set" "jenkins-dns" {
   depends_on = ["google_compute_global_address.jenkins-address", "google_dns_managed_zone.env_dns_zone"]
   type       = "A"
   ttl        = 300
-  managed_zone = "${google_dns_managed_zone.jenkins_env_dns_zone.name}"
+  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
   rrdatas = ["${google_compute_global_address.jenkins-address.address}"]
 }
