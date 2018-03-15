@@ -18,7 +18,7 @@ resource "google_compute_target_https_proxy" "sonar-https-lb-proxy" {
 
 resource "google_compute_url_map" "sonar-https-lb-url-map" {
   name = "${var.env_id}-sonar-https"
-  default_service = "${google_compute_backend_service.router-lb-backend-service.self_link}"
+  default_service = "${google_compute_backend_service.sonar-router-lb-backend-service.self_link}"
 }
 
 resource "google_compute_health_check" "sonar-public-health-check" {
@@ -40,12 +40,12 @@ resource "google_compute_firewall" "sonar-health-check" {
   }
 
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
-  target_tags   = ["${google_compute_backend_service.router-lb-backend-service.name}"]
+  target_tags   = ["${google_compute_backend_service.sonar-router-lb-backend-service.name}"]
 }
 
 
-resource "google_compute_instance_group" "router-lb-0" {
-  name        = "${var.env_id}-router-lb-0-europe-west1-b"
+resource "google_compute_instance_group" "sonar-router-lb-0" {
+  name        = "${var.env_id}-sonar-router-lb-0-europe-west1-b"
   description = "terraform generated instance group that is multi-zone for https loadbalancing"
   zone        = "europe-west1-b"
 
@@ -55,8 +55,8 @@ resource "google_compute_instance_group" "router-lb-0" {
   }
 }
 
-resource "google_compute_instance_group" "router-lb-1" {
-  name        = "${var.env_id}-router-lb-1-europe-west1-c"
+resource "google_compute_instance_group" "sonar-router-lb-1" {
+  name        = "${var.env_id}-sonar-router-lb-1-europe-west1-c"
   description = "terraform generated instance group that is multi-zone for https loadbalancing"
   zone        = "europe-west1-c"
 
@@ -66,8 +66,8 @@ resource "google_compute_instance_group" "router-lb-1" {
   }
 }
 
-resource "google_compute_instance_group" "router-lb-2" {
-  name        = "${var.env_id}-router-lb-2-europe-west1-d"
+resource "google_compute_instance_group" "sonar-router-lb-2" {
+  name        = "${var.env_id}-sonar-router-lb-2-europe-west1-d"
   description = "terraform generated instance group that is multi-zone for https loadbalancing"
   zone        = "europe-west1-d"
 
@@ -77,7 +77,7 @@ resource "google_compute_instance_group" "router-lb-2" {
   }
 }
 
-resource "google_compute_backend_service" "router-lb-backend-service" {
+resource "google_compute_backend_service" "sonar-router-lb-backend-service" {
   name        = "sonar-router-lb"
   port_name   = "http"
   protocol    = "HTTP"
@@ -85,31 +85,31 @@ resource "google_compute_backend_service" "router-lb-backend-service" {
   enable_cdn  = false
 
   backend {
-    group = "${google_compute_instance_group.router-lb-0.self_link}"
+    group = "${google_compute_instance_group.sonar-router-lb-0.self_link}"
   }
 
   backend {
-    group = "${google_compute_instance_group.router-lb-1.self_link}"
+    group = "${google_compute_instance_group.sonar-router-lb-1.self_link}"
   }
 
   backend {
-    group = "${google_compute_instance_group.router-lb-2.self_link}"
+    group = "${google_compute_instance_group.sonar-router-lb-2.self_link}"
   }
 
   health_checks = ["${google_compute_health_check.sonar-public-health-check.self_link}"]
 }
 
-resource "google_dns_managed_zone" "env_dns_zone" {
+resource "google_dns_managed_zone" "sonar_env_dns_zone" {
   name        = "${var.env_id}-zone"
   dns_name    = "${var.env_id}.build.finkit.io."
   description = "DNS zone for the ${var.env_id} environment"
 }
 
 resource "google_dns_record_set" "sonar-dns" {
-  name       = "sonar.${google_dns_managed_zone.env_dns_zone.dns_name}"
+  name       = "sonar.${google_dns_managed_zone.sonar_env_dns_zone.dns_name}"
   depends_on = ["google_compute_global_address.sonar-address"]
   type       = "A"
   ttl        = 300
-  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
+  managed_zone = "${google_dns_managed_zone.sonar_env_dns_zone.name}"
   rrdatas = ["${google_compute_global_address.sonar-address.address}"]
 }
