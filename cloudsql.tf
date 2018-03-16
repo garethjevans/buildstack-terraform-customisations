@@ -50,7 +50,7 @@ resource "google_sql_database_instance" "db_failover" {
 }
 
 resource "google_sql_database" "gerrit_db" {
-  name = "gerrit_db"
+  name = "reviewdb"
   instance = "${google_sql_database_instance.db_instance.name}"
   charset = "utf8"
   collation = "utf8_general_ci"
