@@ -25,7 +25,7 @@ resource "google_compute_health_check" "gerrit-public-health-check" {
   name = "${var.env_id}-gerrit-public"
   http_health_check {
     port         = 8080
-    request_path = "/login"
+    request_path = "/config/server/version"
   }
 }
 
