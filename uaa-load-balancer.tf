@@ -24,7 +24,7 @@ resource "google_compute_url_map" "uaa-https-lb-url-map" {
 resource "google_compute_health_check" "uaa-public-health-check" {
   name = "${var.env_id}-uaa-public"
   http_health_check {
-    port         = 8080
+    port         = 8443
     request_path = "/healthz"
   }
 }
@@ -36,7 +36,7 @@ resource "google_compute_firewall" "uaa-health-check" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8080", "80"]
+    ports    = ["8443", "80"]
   }
 
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
@@ -51,7 +51,7 @@ resource "google_compute_instance_group" "uaa-router-lb-0" {
 
   named_port {
     name = "http"
-    port = "8080"
+    port = "8443"
   }
 }
 
@@ -62,7 +62,7 @@ resource "google_compute_instance_group" "uaa-router-lb-1" {
 
   named_port {
     name = "http"
-    port = "8080"
+    port = "8443"
   }
 }
 
@@ -73,7 +73,7 @@ resource "google_compute_instance_group" "uaa-router-lb-2" {
 
   named_port {
     name = "http"
-    port = "8080"
+    port = "8443"
   }
 }
 
