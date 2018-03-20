@@ -36,7 +36,7 @@ resource "google_compute_firewall" "uaa-health-check" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8443", "80"]
+    ports    = ["8443", "443"]
   }
 
   source_ranges = ["130.211.0.0/22", "35.191.0.0/16"]
