@@ -50,7 +50,7 @@ resource "google_compute_instance_group" "uaa-router-lb-0" {
   zone        = "europe-west1-b"
 
   named_port {
-    name = "http"
+    name = "https"
     port = "8443"
   }
 }
@@ -61,7 +61,7 @@ resource "google_compute_instance_group" "uaa-router-lb-1" {
   zone        = "europe-west1-c"
 
   named_port {
-    name = "http"
+    name = "https"
     port = "8443"
   }
 }
@@ -72,15 +72,15 @@ resource "google_compute_instance_group" "uaa-router-lb-2" {
   zone        = "europe-west1-d"
 
   named_port {
-    name = "http"
+    name = "https"
     port = "8443"
   }
 }
 
 resource "google_compute_backend_service" "uaa-router-lb-backend-service" {
   name        = "uaa-router-lb"
-  port_name   = "http"
-  protocol    = "HTTP"
+  port_name   = "https"
+  protocol    = "HTTPS"
   timeout_sec = 900
   enable_cdn  = false
 
