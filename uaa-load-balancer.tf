@@ -23,7 +23,7 @@ resource "google_compute_url_map" "uaa-https-lb-url-map" {
 
 resource "google_compute_health_check" "uaa-public-health-check" {
   name = "${var.env_id}-uaa-public"
-  http_health_check {
+  https_health_check {
     port         = 8443
     request_path = "/healthz"
   }
