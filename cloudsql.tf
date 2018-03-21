@@ -131,3 +131,7 @@ output "sonar_mysql_password" {
 output "uaa_mysql_password" {
   value = "${random_string.uaa_mysql_password.result}"
 }
+
+output "uaa_mysql_db" {
+  value = "${google_sql_database.uaa_db.name}"
+}
