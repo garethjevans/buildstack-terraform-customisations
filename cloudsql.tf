@@ -70,6 +70,13 @@ resource "random_string" "gerrit_mysql_password" {
   special = false
 }
 
+resource "google_sql_grant" "gerrit_grant" {
+  user = "${gerrit.name}"
+  host = "%"
+  database = "${gerrit_db.name}"
+  privileges = "ALL"
+}
+
 resource "google_sql_database" "sonar_db" {
   name = "sonar_db"
   instance = "${google_sql_database_instance.db_instance.name}"
