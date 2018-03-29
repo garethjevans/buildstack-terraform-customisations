@@ -71,9 +71,9 @@ resource "random_string" "gerrit_mysql_password" {
 }
 
 resource "google_sql_grant" "gerrit_grant" {
-  user = "${gerrit.name}"
+  user = "${google_sql_user.gerrit.name}"
   host = "%"
-  database = "${gerrit_db.name}"
+  database = "${google_sql_database.gerrit_db.name}"
   privileges = "ALL"
 }
 
